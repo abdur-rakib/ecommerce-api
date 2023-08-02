@@ -13,7 +13,6 @@ app.use(express.json());
 // routes
 // test
 app.get("/api/v1/test", (req, res) => {
-  console.log({ req });
   res.status(200).json({ message: "Welcome to home page" });
 });
 // auth
@@ -21,5 +20,6 @@ app.use("/api/v1/auth", authRouter);
 
 // other middlewares
 app.use(notFound);
+// error-handler middleware
 
 module.exports = app;
