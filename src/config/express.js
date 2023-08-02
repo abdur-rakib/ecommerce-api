@@ -1,10 +1,11 @@
 const express = require("express");
 const morgan = require("morgan");
+const { logs } = require("./vars");
 
 const app = express();
 
 // middlewares
-app.use(morgan("dev"));
+app.use(morgan(logs));
 app.use(express.json());
 
 // routes
