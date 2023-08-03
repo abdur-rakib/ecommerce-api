@@ -1,3 +1,4 @@
+// init database
 require("./init/database");
 const { port } = require("../config/vars");
 const app = require("./init/express");
