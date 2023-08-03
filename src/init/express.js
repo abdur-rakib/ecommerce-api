@@ -1,9 +1,11 @@
 require("express-async-errors");
 const express = require("express");
 const morgan = require("morgan");
-const notFound = require("../api/middlewares/not-found");
-const errorHandlerMiddleware = require("../api/middlewares/error-handler");
-const authRouter = require("../api/routes/auth.route");
+const {
+  errorHandlerMiddleware,
+  notFoundMiddleware,
+} = require("../api/middlewares");
+const { authRouter } = require("../api/routes");
 const { logs } = require("../../config/vars");
 
 const app = express();
@@ -21,7 +23,7 @@ app.get("/api/v1/test", (req, res) => {
 app.use("/api/v1/auth", authRouter);
 
 // other middlewares
-app.use(notFound);
+app.use(notFoundMiddleware);
 // error-handler middleware
 app.use(errorHandlerMiddleware);
 
