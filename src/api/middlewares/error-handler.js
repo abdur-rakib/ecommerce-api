@@ -5,7 +5,7 @@ const errorHandlerMiddleware = (err, req, res, next) => {
   const statusCode = err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR;
   const message = err.message || "Something went wrong try again later";
 
-  return res.status(statusCode).json(generateResponse(false, message));
+  return res.status(statusCode).json(generateResponse(false, null, message));
 };
 
 module.exports = errorHandlerMiddleware;

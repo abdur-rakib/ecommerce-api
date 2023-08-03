@@ -1,4 +1,4 @@
-module.exports = (success, message = null, data = null) => {
+module.exports = (success, data = null, message = null) => {
   if (success) {
     return {
       success: true,
