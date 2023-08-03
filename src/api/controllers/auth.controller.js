@@ -1,5 +1,6 @@
 const { StatusCodes } = require("http-status-codes");
 const User = require("../models/user.model");
+const generateResponse = require("../helpers/generateResponse");
 
 // register user
 const register = async (req, res) => {
@@ -10,14 +11,8 @@ const register = async (req, res) => {
   }
 
   const user = await User.create({ name, email, password });
-  console.log("🚀 ~ file: auth.controller.js:13 ~ register ~ user:", user);
 
-  res.status(StatusCodes.CREATED).json({
-    status: "success",
-    data: {
-      user,
-    },
-  });
+  res.status(StatusCodes.CREATED).json(generateResponse(true, user));
 };
 
 module.exports = { register };
