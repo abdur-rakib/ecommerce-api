@@ -3,11 +3,9 @@ const { generateResponse } = require("../helpers");
 const { Product } = require("../models");
 
 const createProduct = async (req, res) => {
-  // req.body.user = req.user.userId;
-  // const product = await Product.create(req.body);
-  res
-    .status(StatusCodes.CREATED)
-    .json(generateResponse(false, null, "Create produt route"));
+  req.body.user = req.user.userId;
+  const product = await Product.create(req.body);
+  res.status(StatusCodes.CREATED).json(generateResponse(true, product));
 };
 
 const getAllProducts = async (req, res) => {
