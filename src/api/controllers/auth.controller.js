@@ -1,20 +1,22 @@
 const User = require("../models/user.model");
-const generateResponse = require("../helpers/generateResponse");
-const { registrationSchema } = require("../validations/auth.validation");
 const createTokenUser = require("../helpers/createTokenUser");
 const { BadRequestError, UnauthenticatedError } = require("../errors");
 const { attachCookiesToResponse } = require("../helpers");
+const { registrationSchema, loginSchema } = require("../validations");
 
 // register user
 const register = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { error, value } = registrationSchema.validate(req.body);
+  if (error) {
+    throw new BadRequestError(error.message);
+  }
 
-  const isEmailAlreadyExists = await User.findOne({ email });
+  const isEmailAlreadyExists = await User.findOne({ email: req.body.email });
   if (isEmailAlreadyExists) {
     throw new Error("E-mail already exists");
   }
 
-  const user = await User.create({ name, email, password });
+  const user = await User.create(value);
   const tokenUser = createTokenUser(user);
 
   attachCookiesToResponse(res, tokenUser);
@@ -22,17 +24,17 @@ const register = async (req, res) => {
 
 // login user
 const login = async (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password) {
-    throw new BadRequestError("Please provide email and password");
+  const { error, value } = loginSchema.validate(req.body);
+  if (error) {
+    throw new BadRequestError(error.message);
   }
 
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email: value.email });
   if (!user) {
     throw new UnauthenticatedError("Invalid credentials");
   }
 
-  const isPasswordCorrect = await user.comparePassword(password);
+  const isPasswordCorrect = await user.comparePassword(value.password);
 
   if (!isPasswordCorrect) {
     throw new UnauthenticatedError("Invalid credentials");
