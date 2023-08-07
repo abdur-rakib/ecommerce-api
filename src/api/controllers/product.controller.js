@@ -1,10 +1,17 @@
 const { StatusCodes } = require("http-status-codes");
 const { generateResponse } = require("../helpers");
 const { Product } = require("../models");
+const { createProductSchema } = require("../validations");
+const { BadRequestError } = require("../errors");
 
 const createProduct = async (req, res) => {
   req.body.user = req.user.userId;
-  const product = await Product.create(req.body);
+  // validate product payload
+  const { error, value } = createProductSchema.validate(req.body);
+  if (error) {
+    throw new BadRequestError(error.message);
+  }
+  const product = await Product.create(value);
   res.status(StatusCodes.CREATED).json(generateResponse(true, product));
 };
 
