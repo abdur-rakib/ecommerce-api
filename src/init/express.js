@@ -6,7 +6,7 @@ const {
   errorHandlerMiddleware,
   notFoundMiddleware,
 } = require("../api/middlewares");
-const { authRouter } = require("../api/routes");
+const { authRouter, productRouter } = require("../api/routes");
 const { logs } = require("../../config/vars");
 
 const app = express();
@@ -23,6 +23,8 @@ app.get("/api/v1/test", (req, res) => {
 });
 // auth
 app.use("/api/v1/auth", authRouter);
+// product
+app.use("/api/v1/product", productRouter);
 
 // other middlewares
 app.use(notFoundMiddleware);
