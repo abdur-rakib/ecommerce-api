@@ -1,6 +1,7 @@
 require("express-async-errors");
 const express = require("express");
 const morgan = require("morgan");
+const cookieParser = require("cookie-parser");
 const {
   errorHandlerMiddleware,
   notFoundMiddleware,
@@ -13,6 +14,7 @@ const app = express();
 // middlewares
 app.use(morgan(logs));
 app.use(express.json());
+app.use(cookieParser(process.env.JWT_SECRET));
 
 // routes
 // test

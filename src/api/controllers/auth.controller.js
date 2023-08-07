@@ -4,6 +4,7 @@ const generateResponse = require("../helpers/generateResponse");
 const { registrationSchema } = require("../validations/auth.validation");
 const createTokenUser = require("../helpers/createTokenUser");
 const { BadRequestError, UnauthenticatedError } = require("../errors");
+const { attachCookiesToResponse } = require("../helpers");
 
 // register user
 const register = async (req, res) => {
@@ -15,10 +16,9 @@ const register = async (req, res) => {
   }
 
   const user = await User.create({ name, email, password });
+  const tokenUser = createTokenUser(user);
 
-  res
-    .status(StatusCodes.CREATED)
-    .json(generateResponse(true, createTokenUser(user)));
+  attachCookiesToResponse(res, tokenUser);
 };
 
 // login user
@@ -40,8 +40,7 @@ const login = async (req, res) => {
   }
 
   const tokenUser = createTokenUser(user);
-  res.status(StatusCodes.OK).json(generateResponse(true, tokenUser));
-  // attachCookiesToResponse(res, tokenUser);
+  attachCookiesToResponse(res, tokenUser);
 };
 
 module.exports = { register, login };
