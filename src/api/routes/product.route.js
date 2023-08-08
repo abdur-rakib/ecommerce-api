@@ -2,7 +2,8 @@ const express = require("express");
 const {
   getAllProducts,
   createProduct,
-} = require("../controllers/product.controller");
+  getSingleProduct,
+} = require("../controllers");
 const { authenticateUser, authorizePermissions } = require("../middlewares");
 
 const router = express.Router();
@@ -14,5 +15,7 @@ router
     [authenticateUser, authorizePermissions("CREATE_PRODUCT")],
     createProduct
   );
+
+router.route("/:id").get(authenticateUser, getSingleProduct);
 
 module.exports = router;

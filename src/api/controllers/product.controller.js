@@ -2,11 +2,11 @@ const { StatusCodes } = require("http-status-codes");
 const { generateResponse } = require("../helpers");
 const { Product } = require("../models");
 const { createProductSchema } = require("../validations");
-const { BadRequestError } = require("../errors");
+const { BadRequestError, NotFoundError } = require("../errors");
 
+// create product controller
 const createProduct = async (req, res) => {
   req.body.user = req.user.userId;
-  // validate product payload
   const { error, value } = createProductSchema.validate(req.body);
   if (error) {
     throw new BadRequestError(error.message);
@@ -15,9 +15,20 @@ const createProduct = async (req, res) => {
   res.status(StatusCodes.CREATED).json(generateResponse(true, product));
 };
 
+// get all product list
 const getAllProducts = async (req, res) => {
   const products = await Product.find({});
   res.status(StatusCodes.OK).json(generateResponse(true, products));
 };
 
-module.exports = { createProduct, getAllProducts };
+// get single product
+const getSingleProduct = async (req, res) => {
+  const { id: productId } = req.params;
+  const product = await Product.findOne({ _id: productId });
+  if (!product) {
+    throw new NotFoundError(`No product with id : ${productId}`);
+  }
+  res.status(StatusCodes.OK).json(generateResponse(true, product));
+};
+
+module.exports = { createProduct, getAllProducts, getSingleProduct };
