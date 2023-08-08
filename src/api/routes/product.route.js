@@ -10,26 +10,17 @@ const { authenticateUser, authorizePermissions } = require("../middlewares");
 
 const router = express.Router();
 
+router.use(authenticateUser);
+
 router
   .route("/")
-  .get(authenticateUser, getAllProducts)
-  .post(
-    [authenticateUser, authorizePermissions("CREATE_PRODUCT")],
-    createProduct
-  );
+  .get(getAllProducts)
+  .post([authorizePermissions("CREATE_PRODUCT")], createProduct);
 
 router
   .route("/:id")
-  .get(authenticateUser, getSingleProduct)
-  .patch(
-    authenticateUser,
-    authorizePermissions("UPDATE_PRODUCT"),
-    updateSingleProduct
-  )
-  .delete(
-    authenticateUser,
-    authorizePermissions("DELETE_PRODUCT"),
-    deleteSingleProduct
-  );
+  .get(getSingleProduct)
+  .patch(authorizePermissions("UPDATE_PRODUCT"), updateSingleProduct)
+  .delete(authorizePermissions("DELETE_PRODUCT"), deleteSingleProduct);
 
 module.exports = router;
