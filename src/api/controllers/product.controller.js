@@ -46,9 +46,23 @@ const updateSingleProduct = async (req, res) => {
   res.status(StatusCodes.OK).json(generateResponse(true, product));
 };
 
+// delete single product
+const deleteSingleProduct = async (req, res) => {
+  const { id: productId } = req.params;
+  const product = await Product.findOne({ _id: productId });
+  if (!product) {
+    throw new NotFoundError(`No product with id : ${productId}`);
+  }
+  await product.deleteOne();
+  res
+    .status(StatusCodes.OK)
+    .json(generateResponse(true, null, "Success! Product removed."));
+};
+
 module.exports = {
   createProduct,
   getAllProducts,
   getSingleProduct,
   updateSingleProduct,
+  deleteSingleProduct,
 };

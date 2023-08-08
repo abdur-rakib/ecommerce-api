@@ -2,7 +2,8 @@ module.exports = (success, data = null, message = null) => {
   if (success) {
     return {
       success: true,
-      data: data,
+      data,
+      message,
     };
   } else {
     return {

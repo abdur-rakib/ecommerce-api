@@ -4,6 +4,7 @@ const {
   createProduct,
   getSingleProduct,
   updateSingleProduct,
+  deleteSingleProduct,
 } = require("../controllers");
 const { authenticateUser, authorizePermissions } = require("../middlewares");
 
@@ -24,6 +25,11 @@ router
     authenticateUser,
     authorizePermissions("UPDATE_PRODUCT"),
     updateSingleProduct
+  )
+  .delete(
+    authenticateUser,
+    authorizePermissions("DELETE_PRODUCT"),
+    deleteSingleProduct
   );
 
 module.exports = router;
