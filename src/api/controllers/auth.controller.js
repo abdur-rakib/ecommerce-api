@@ -1,8 +1,9 @@
 const User = require("../models/user.model");
 const createTokenUser = require("../helpers/createTokenUser");
 const { BadRequestError, UnauthenticatedError } = require("../errors");
-const { attachCookiesToResponse } = require("../helpers");
+const { attachCookiesToResponse, generateResponse } = require("../helpers");
 const { registrationSchema, loginSchema } = require("../validations");
+const { StatusCodes } = require("http-status-codes");
 
 // register user
 const register = async (req, res) => {
@@ -44,4 +45,14 @@ const login = async (req, res) => {
   attachCookiesToResponse(res, tokenUser);
 };
 
-module.exports = { register, login };
+const logout = async (req, res) => {
+  res.cookie("token", "", {
+    httpOnly: true,
+    expiresIn: new Date(Date.now),
+  });
+  res
+    .status(StatusCodes.OK)
+    .json(generateResponse(true, null, "User logged out successfully"));
+};
+
+module.exports = { register, login, logout };

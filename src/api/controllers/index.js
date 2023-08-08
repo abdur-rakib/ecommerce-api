@@ -5,7 +5,7 @@ const {
   updateSingleProduct,
   deleteSingleProduct,
 } = require("./product.controller");
-const { login, register } = require("./auth.controller");
+const { login, register, logout } = require("./auth.controller");
 
 module.exports = {
   getAllProducts,
@@ -15,4 +15,5 @@ module.exports = {
   deleteSingleProduct,
   login,
   register,
+  logout,
 };
