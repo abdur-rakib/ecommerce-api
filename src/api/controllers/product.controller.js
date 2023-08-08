@@ -17,8 +17,20 @@ const createProduct = async (req, res) => {
 
 // get all product list
 const getAllProducts = async (req, res) => {
-  const products = await Product.find({});
-  res.status(StatusCodes.OK).json(generateResponse(true, products));
+  const products = await Product.find({})
+    .limit(limit)
+    .skip((page - 1) * limit);
+
+  const count = await Product.count();
+  const data = {
+    products,
+    totalPages: Math.ceil(count / limit),
+    currentPage: Number(page),
+    total: count,
+  };
+  res
+    .status(StatusCodes.OK)
+    .json(generateResponse(true, data, "Get all products"));
 };
 
 // get single product
