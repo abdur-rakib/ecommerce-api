@@ -3,6 +3,7 @@ const {
   getAllProducts,
   createProduct,
   getSingleProduct,
+  updateSingleProduct,
 } = require("../controllers");
 const { authenticateUser, authorizePermissions } = require("../middlewares");
 
@@ -16,6 +17,13 @@ router
     createProduct
   );
 
-router.route("/:id").get(authenticateUser, getSingleProduct);
+router
+  .route("/:id")
+  .get(authenticateUser, getSingleProduct)
+  .patch(
+    authenticateUser,
+    authorizePermissions("UPDATE_PRODUCT"),
+    updateSingleProduct
+  );
 
 module.exports = router;

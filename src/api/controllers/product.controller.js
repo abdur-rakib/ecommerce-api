@@ -31,4 +31,24 @@ const getSingleProduct = async (req, res) => {
   res.status(StatusCodes.OK).json(generateResponse(true, product));
 };
 
-module.exports = { createProduct, getAllProducts, getSingleProduct };
+// update single product
+const updateSingleProduct = async (req, res) => {
+  const { id: productId } = req.params;
+  const product = await Product.findOneAndUpdate({ _id: productId }, req.body, {
+    new: true,
+    runValidators: true,
+  });
+
+  if (!product) {
+    throw new NotFoundError(`No product with id : ${productId}`);
+  }
+
+  res.status(StatusCodes.OK).json(generateResponse(true, product));
+};
+
+module.exports = {
+  createProduct,
+  getAllProducts,
+  getSingleProduct,
+  updateSingleProduct,
+};
