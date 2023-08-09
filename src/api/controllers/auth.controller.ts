@@ -1,12 +1,16 @@
-const User = require("../models/user.model");
-const createTokenUser = require("../helpers/createTokenUser");
-const { BadRequestError, UnauthenticatedError } = require("../errors");
-const { attachCookiesToResponse, generateResponse } = require("../helpers");
-const { registrationSchema, loginSchema } = require("../validations");
-const { StatusCodes } = require("http-status-codes");
+import { StatusCodes } from "http-status-codes";
+import { BadRequestError, UnauthenticatedError } from "../errors";
+import {
+  attachCookiesToResponse,
+  createTokenUser,
+  generateResponse,
+} from "../helpers";
+import { User } from "../models";
+import { loginSchema, registrationSchema } from "../validations";
+import { Request, Response } from "express";
 
 // register user
-const register = async (req, res) => {
+export const register = async (req: Request, res: Response) => {
   const { error, value } = registrationSchema.validate(req.body);
   if (error) {
     throw new BadRequestError(error.message);
@@ -24,7 +28,7 @@ const register = async (req, res) => {
 };
 
 // login user
-const login = async (req, res) => {
+export const login = async (req: Request, res: Response) => {
   const { error, value } = loginSchema.validate(req.body);
   if (error) {
     throw new BadRequestError(error.message);
@@ -34,7 +38,7 @@ const login = async (req, res) => {
   if (!user) {
     throw new UnauthenticatedError("Invalid credentials");
   }
-
+  // @ts-ignore
   const isPasswordCorrect = await user.comparePassword(value.password);
 
   if (!isPasswordCorrect) {
@@ -45,14 +49,12 @@ const login = async (req, res) => {
   attachCookiesToResponse(res, tokenUser);
 };
 
-const logout = async (req, res) => {
+export const logout = async (req: Request, res: Response) => {
   res.cookie("token", "", {
     httpOnly: true,
-    expiresIn: new Date(Date.now),
+    expires: new Date(Date.now()),
   });
   res
     .status(StatusCodes.OK)
     .json(generateResponse(true, null, "User logged out successfully"));
 };
-
-module.exports = { register, login, logout };

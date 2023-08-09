@@ -1,12 +1,18 @@
-const { StatusCodes } = require("http-status-codes");
-const generateResponse = require("../helpers/generateResponse");
+import { StatusCodes } from "http-status-codes";
+import { generateResponse } from "../helpers";
+import { NextFunction, Request, Response } from "express";
 
-const errorHandlerMiddleware = (err, req, res, next) => {
+export const errorHandlerMiddleware = (
+  err,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   let statusCode = err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR;
   let message = err.message || "Something went wrong try again later";
   if (err.name === "ValidationError") {
     message = Object.values(err.errors)
-      .map((item) => item.message)
+      .map((item: { message: string }) => item.message)
       .join(", ");
     statusCode = 400;
   }
@@ -18,5 +24,3 @@ const errorHandlerMiddleware = (err, req, res, next) => {
 
   return res.status(statusCode).json(generateResponse(false, null, message));
 };
-
-module.exports = errorHandlerMiddleware;

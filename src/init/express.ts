@@ -1,14 +1,10 @@
-import { vars } from "../../config/vars";
+require("express-async-errors");
 import express from "express";
 import morgan from "morgan";
-
-require("express-async-errors");
-const cookieParser = require("cookie-parser");
-const {
-  errorHandlerMiddleware,
-  notFoundMiddleware,
-} = require("../api/middlewares");
-const { authRouter, productRouter } = require("../api/routes");
+import { authRouter, productRouter } from "../api/routes";
+import { errorHandlerMiddleware, notFoundMiddleware } from "../api/middlewares";
+import cookieParser from "cookie-parser";
+import { vars } from "../../config/vars";
 
 const { logs } = vars;
 

@@ -1,11 +1,16 @@
-const { StatusCodes } = require("http-status-codes");
-const { generateResponse } = require("../helpers");
-const { Product } = require("../models");
-const { createProductSchema } = require("../validations");
-const { BadRequestError, NotFoundError } = require("../errors");
+import { StatusCodes } from "http-status-codes";
+import { BadRequestError, NotFoundError } from "../errors";
+import { Product } from "../models";
+import { createProductSchema } from "../validations";
+import { generateResponse } from "../helpers";
+import { Request, Response } from "express";
+import { AuthenticatedRequest } from "../../global.types";
 
 // create product controller
-const createProduct = async (req, res) => {
+export const createProduct = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
   req.body.user = req.user.userId;
   const { error, value } = createProductSchema.validate(req.body);
   if (error) {
@@ -16,15 +21,16 @@ const createProduct = async (req, res) => {
 };
 
 // get all product list
-const getAllProducts = async (req, res) => {
+export const getAllProducts = async (req: Request, res: Response) => {
+  const { limit, page } = req.query;
   const products = await Product.find({})
-    .limit(limit)
-    .skip((page - 1) * limit);
+    .limit(Number(limit))
+    .skip((Number(page) - 1) * Number(limit));
 
   const count = await Product.count();
   const data = {
     products,
-    totalPages: Math.ceil(count / limit),
+    totalPages: Math.ceil(count / Number(limit)),
     currentPage: Number(page),
     total: count,
   };
@@ -34,7 +40,7 @@ const getAllProducts = async (req, res) => {
 };
 
 // get single product
-const getSingleProduct = async (req, res) => {
+export const getSingleProduct = async (req: Request, res: Response) => {
   const { id: productId } = req.params;
   const product = await Product.findOne({ _id: productId });
   if (!product) {
@@ -44,7 +50,7 @@ const getSingleProduct = async (req, res) => {
 };
 
 // update single product
-const updateSingleProduct = async (req, res) => {
+export const updateSingleProduct = async (req: Request, res: Response) => {
   const { id: productId } = req.params;
   const product = await Product.findOneAndUpdate({ _id: productId }, req.body, {
     new: true,
@@ -59,7 +65,7 @@ const updateSingleProduct = async (req, res) => {
 };
 
 // delete single product
-const deleteSingleProduct = async (req, res) => {
+export const deleteSingleProduct = async (req: Request, res: Response) => {
   const { id: productId } = req.params;
   const product = await Product.findOne({ _id: productId });
   if (!product) {
@@ -69,12 +75,4 @@ const deleteSingleProduct = async (req, res) => {
   res
     .status(StatusCodes.OK)
     .json(generateResponse(true, null, "Success! Product removed."));
-};
-
-module.exports = {
-  createProduct,
-  getAllProducts,
-  getSingleProduct,
-  updateSingleProduct,
-  deleteSingleProduct,
 };

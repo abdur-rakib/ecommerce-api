@@ -1,3 +1,2 @@
-const { permissions } = require("./permissions");
-
-module.exports = { permissions };
+export * from "./permissions";
+export * from "./constants.types";
