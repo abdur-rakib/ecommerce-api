@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import validator from "validator";
 import bcrypt from "bcrypt";
+import { IUser } from "./model.types";
 
 const UserSchema = new mongoose.Schema({
   name: {
@@ -43,4 +44,4 @@ UserSchema.methods.comparePassword = async function (userPassword) {
   return isMatch;
 };
 
-export const User = mongoose.model("User", UserSchema);
+export const User = mongoose.model<IUser>("User", UserSchema);
